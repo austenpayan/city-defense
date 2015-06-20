@@ -5,7 +5,7 @@ var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 
 var turrets = [];
-var meteorDelay = 60;
+var meteorDelay = 25;
 var meteorDelayCounter = 0;
 var meteors = [];
 var meteorVelocity = 3;
@@ -13,6 +13,7 @@ var leftTurret;
 var rightTurret;
 var bullets = [];
 var bulletVelocity = 5;
+var explosions = [];
 
 var keysDown = {};
 var mouseX;
@@ -220,6 +221,46 @@ class Turret {
 
 }
 
+
+class Explosion {
+
+	constructor(x, y) {
+
+		this.width = 1;
+		this.height = 1;
+		this.x = x - (this.width / 2);
+		this.y = y - (this.height / 2);
+
+		this.frame = 1;
+
+		this.draw();
+
+	}
+
+	update() {
+
+		this.width = 1 * this.frame;
+		this.height = 1 * this.frame;
+		this.x = this.x;
+		this.y = this.y;
+
+		this.draw();
+		this.frame++;
+
+	}
+
+	draw() {
+
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.width, 0, 2 * Math.PI, false);
+		ctx.fillStyle = "#FF9420";
+		ctx.fill();
+
+	}
+
+}
+
+
 function updateMeteors() {
 
 	for(var i = 0; i < meteors.length; i++) {
@@ -227,7 +268,6 @@ function updateMeteors() {
 		meteors[i].update();
 
 	}
-
 }
 
 function updateTurrets() {
@@ -242,6 +282,25 @@ function updateBullets() {
 	for(var i = 0; i < bullets.length; i++) {
 
 		bullets[i].update();
+
+	}
+
+}
+
+function updateExplosions() {
+
+	for(var i = 0; i < explosions.length; i++) {
+
+		if (explosions[i].frame > 40) {
+
+			explosions.splice(i, 1);
+			i--;
+
+		} else {
+
+			explosions[i].update();
+
+		}
 
 	}
 
@@ -291,6 +350,8 @@ function checkForCollisions() {
 
 			if (collides(bullets[i], meteors[e])) {
 
+				explosions.push(new Explosion(bullets[i].x, bullets[i].y));
+
 				bullets.splice(i, 1);
 				meteors.splice(e, 1);
 
@@ -318,7 +379,9 @@ function checkForBounds() {
 
 		if (meteors[e].y + meteors[e].height >= canvas.height) {
 
-			meteors.slice(e, 1);
+			explosions.push(new Explosion(meteors[e].x, meteors[e].y));
+
+			meteors.splice(e, 1);
 
 		}
 
@@ -353,6 +416,7 @@ function update() {
 	updateMeteors();
 	updateTurrets();
 	updateBullets();
+	updateExplosions();
 	checkForBulletFire();
 	checkForCollisions();
 	checkForBounds();
