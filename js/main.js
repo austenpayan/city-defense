@@ -5,7 +5,8 @@ var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 
 var turrets = [];
-var meteorDelay = 25;
+var meteorDelay = 50;
+var gravity = 0.001;
 var meteorDelayCounter = 0;
 var meteors = [];
 var meteorVelocity = 3;
@@ -106,6 +107,7 @@ class Bullet {
 		this.y = startY;
 		this.width = 5;
 		this.height = 5;
+		this.frames = 1;
 
 		this.draw();
 
@@ -129,7 +131,7 @@ class Bullet {
 			ratio = localC / globalC;
 
 			this.x = this.x + (globalA * ratio);
-			this.y = this.y + (globalB * ratio);
+			this.y = this.y + (globalB * ratio) + (gravity * this.frames);
 
 		} else if (this.startX > this.destinationX) {
 
@@ -139,7 +141,7 @@ class Bullet {
 			ratio = localC / globalC;
 
 			this.x = this.x - (globalA * ratio);
-			this.y = this.y + (globalB * ratio);
+			this.y = this.y + (globalB * ratio) + (gravity * this.frames);
 
 		}
 		
@@ -149,6 +151,7 @@ class Bullet {
 
 		this.calculateTrajectory();
 		this.draw();
+		this.frames++;
 
 	}
 

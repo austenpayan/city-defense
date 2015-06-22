@@ -10,7 +10,8 @@ var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 
 var turrets = [];
-var meteorDelay = 25;
+var meteorDelay = 50;
+var gravity = 0.001;
 var meteorDelayCounter = 0;
 var meteors = [];
 var meteorVelocity = 3;
@@ -106,6 +107,7 @@ var Bullet = (function () {
 		this.y = startY;
 		this.width = 5;
 		this.height = 5;
+		this.frames = 1;
 
 		this.draw();
 	}
@@ -130,7 +132,7 @@ var Bullet = (function () {
 				ratio = localC / globalC;
 
 				this.x = this.x + globalA * ratio;
-				this.y = this.y + globalB * ratio;
+				this.y = this.y + globalB * ratio + gravity * this.frames;
 			} else if (this.startX > this.destinationX) {
 
 				globalA = this.startX - this.destinationX;
@@ -139,7 +141,7 @@ var Bullet = (function () {
 				ratio = localC / globalC;
 
 				this.x = this.x - globalA * ratio;
-				this.y = this.y + globalB * ratio;
+				this.y = this.y + globalB * ratio + gravity * this.frames;
 			}
 		}
 	}, {
@@ -148,6 +150,7 @@ var Bullet = (function () {
 
 			this.calculateTrajectory();
 			this.draw();
+			this.frames++;
 		}
 	}, {
 		key: "draw",
