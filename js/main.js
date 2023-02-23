@@ -5,7 +5,6 @@ const ctx = canvas.getContext("2d");
 const turrets = [];
 const meteorDelay = 50;
 const gravity = 0.001;
-const meteorDelayCounter = 0;
 const meteors = [];
 const meteorVelocity = 3;
 const bullets = [];
@@ -13,6 +12,7 @@ const bulletVelocity = 5;
 const explosions = [];
 const keysDown = {};
 
+let meteorDelayCounter = 0;
 let leftTurret;
 let rightTurret;
 let mouseX;
